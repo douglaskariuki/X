@@ -9,16 +9,17 @@ function App() {
   });
   const [matrix, setMatrix] = useState([]);
 
-  useEffect(() => {
-    const data = getData(5, 6)
-    setData(data)
-    createMatrix()
-  }, [])
-
-
   const {rows, cols} = data;
 
-  function createMatrix() {
+  useEffect(() => {
+    const dataGrid = getData(5, 6)
+    setData(dataGrid)
+    setMatrix(createMatrix(rows, cols))
+  }, [data])
+
+  function createMatrix(rows, cols) {
+    let arr = [];
+
     rows.map((d) => {
       cols.map((v) => {
         var grid = {
@@ -26,10 +27,11 @@ function App() {
           y: v,
           product: d * v
         }
-
-        setMatrix([grid])
+        arr.push(grid)
       })
     })
+
+    return arr
   }
 
   return (
@@ -45,6 +47,9 @@ function App() {
           />
           <LeftCol 
             data={cols}
+          />
+          <Multiples 
+            data={matrix}
           />
         </Grid>
       </div>
@@ -86,24 +91,49 @@ function LeftCol({data}) {
   )
 }
 
+function Multiples({data}) {
+  return (
+    <g className='Multiples'>
+      <Numbers 
+        data={data}
+        orient="grid"
+      />
+    </g>
+  )
+}
+
 function Numbers({data, orient}) {
   if (orient === "y") {
     return (
       data.map((d, i) => (
         <text 
-          transform='translate(-30, 60)'
+          transform='translate(-60, 60)'
           y={i * 60}
         >{d}</text>
       ))
     )
   }
 
+  if (orient === "x") {
+    return (
+      data.map((d, i) => (
+        <text 
+          transform='translate(0, 0)'
+          x={i * 60}
+        >{d}</text>
+      ))
+    )
+  }
+
   return (
-    data.map((d, i) => (
-      <text 
-        transform='translate(0, 0)'
-        x={i * 60 + 20}
-      >{d}</text>
+    data.map((d) => (
+      <text
+        transform='translate(-60)'
+        x={d.x * 60}
+        y={d.y * 60}
+      >
+        {d.product}
+      </text>
     ))
   )
   
