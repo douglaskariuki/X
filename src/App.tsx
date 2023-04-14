@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import * as d3 from 'd3';
 
 function App() {
-  const [rows, setRows] = useState(getRows(5));
-  const [cols, setCols] = useState(getCols(5));
+  const [data, setData] = useState({
+    rows: [],
+    cols: []
+  });
+  const [matrix, setMatrix] = useState([]);
 
-  var matrix = [];
+  useEffect(() => {
+    const data = getData(5, 6)
+    setData(data)
+    createMatrix()
+  }, [])
+
+
+  const {rows, cols} = data;
 
   function createMatrix() {
     rows.map((d) => {
@@ -17,13 +27,10 @@ function App() {
           product: d * v
         }
 
-        matrix.push(grid);
+        setMatrix([grid])
       })
     })
   }
-
-  createMatrix()
-  console.log(matrix)
 
   return (
     <div className="App">
@@ -121,14 +128,10 @@ function createChartDimensions() {
   }
 }
 
-function getRows(total: number) {
-  let rowsArray = Array.from(Array(total), (_, i) => i)
-  return rowsArray
-}
-
-function getCols(total: number) {
-  let colsArray = Array.from(Array(total), (_, i) => i)
-  return colsArray
+function getData(horizontal: number, vertical: number) {
+  let rows = Array.from(Array(horizontal), (_, i) => i + 1)
+  let cols = Array.from(Array(vertical), (_, i) => i + 1)
+  return {rows, cols}
 }
 
 export default App;
